@@ -1,42 +1,7 @@
-.defender {
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
+/* HELL Defender (Windows Security) — view-specific styles.
+   Layout and colors are handled by Chakra props in Defender.tsx; shared Win10
+   controls (progress bar, scrollbars, focus rectangles) live in components/win10.css. */
 
-    padding: 32px 40px;
-    overflow-y: auto;
-
-    background-color: var(--hell-background);
-    color: var(--hell-text);
-}
-
-.defender h1 {
-    margin: 0 0 12px;
-    font-size: 32px;
-    font-weight: 400;
-}
-
-.defender > p {
-    margin-bottom: 32px;
-    color: var(--hell-secondary);
-}
-
-/* Defender landing-page panel */
-
-.defender section {
-    max-width: 900px;
-    padding: 28px;
-
-    background-color: var(--hell-panel);
-    border: 1px solid var(--hell-border);
-}
-
-.defender section h2 {
-    margin-top: 0;
-    font-size: 24px;
-    font-weight: 400;
-}
-
-.defender section p {
-    color: var(--hell-secondary);
+.win-light nav button {
+    user-select: none;
 }
