@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/electron-vite.animate.svg'
+import { useEffect } from 'react'
 import './App.css'
+import {Settings} from "./view/Settings.tsx";
+import {Defender} from "./view/Defender.tsx";
+import {Update} from "./view/Update.tsx";
+
+type AppType = 'settings' | 'defender' | 'update'
+
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+    const appType = new URLSearchParams(window.location.search)
+        .get('app') as AppType | null
 
-  return (
-    <>
-      <div>
-        <a href="https://electron-vite.github.io" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    useEffect(() => {
+        const titles: Record<AppType, string> = {
+            settings: 'HELL Settings',
+            defender: 'HELL Defender',
+            update: 'HELL Update',
+        }
+
+        if (appType) {
+            document.title = titles[appType]
+        }
+    }, [appType])
+
+    switch (appType) {
+        case 'settings':
+            return <Settings />
+
+        case 'defender':
+            return <Defender />
+
+        case 'update':
+            return <Update />
+
+        default:
+            return (
+                <main>
+                    <h1>HELL</h1>
+                    <p>Unknown application.</p>
+                </main>
+            )
+    }
 }
 
 export default App

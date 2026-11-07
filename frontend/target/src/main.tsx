@@ -1,15 +1,15 @@
-import React from 'react'
+import {StrictMode} from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import App from './App'
 import './index.css'
+import {Provider} from "./provider.tsx";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+ReactDOM.createRoot(
+    document.getElementById('root')!,
+).render(
+    <StrictMode>
+        <Provider>
+            <App />
+        </Provider>
+    </StrictMode>,
 )
-
-// Use contextBridge
-window.ipcRenderer.on('main-process-message', (_event, message) => {
-  console.log(message)
-})
