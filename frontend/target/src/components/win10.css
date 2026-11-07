@@ -1,0 +1,109 @@
+/* Shared Windows 10 (light theme) control styling for HELL Settings / HELL Defender */
+
+.win-light {
+    color-scheme: light;
+    font-family: "Segoe UI", "Segoe UI Variable", Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Win10-style thin light scrollbars (overrides the global dark ones in index.css) */
+.win-light ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.win-light ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.win-light ::-webkit-scrollbar-thumb {
+    background: #c2c2c2;
+    border-radius: 0;
+}
+
+.win-light ::-webkit-scrollbar-thumb:hover {
+    background: #a6a6a6;
+}
+
+/* Win10 keyboard focus rectangle */
+.win-light button:focus-visible,
+.win-light select:focus-visible,
+.win-light [role="button"]:focus-visible {
+    outline: 1px dotted #000;
+    outline-offset: -3px;
+}
+
+/* Toggle switch */
+.win-toggle {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 20px;
+    padding: 0;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background: transparent;
+    transition: background-color 100ms linear, border-color 100ms linear;
+}
+
+.win-toggle:hover {
+    border-color: #000;
+}
+
+.win-toggle-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #333;
+    transition: left 100ms linear, background-color 100ms linear;
+}
+
+.win-toggle.on {
+    background: #0078d7;
+    border-color: #0078d7;
+}
+
+.win-toggle.on .win-toggle-knob {
+    left: 23px;
+    background: #fff;
+}
+
+/* Drop-down */
+.win-select {
+    min-width: 220px;
+    height: 32px;
+    padding: 0 8px;
+    color: #000;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+.win-select:hover {
+    border-color: #7a7a7a;
+}
+
+/* Slider */
+.win-range {
+    width: 100%;
+    max-width: 320px;
+    accent-color: #0078d7;
+}
+
+/* Progress bar (determinate) */
+.win-progress {
+    width: 100%;
+    height: 4px;
+    background: #ccc;
+    overflow: hidden;
+}
+
+.win-progress > div {
+    height: 100%;
+    background: #0078d7;
+    transition: width 250ms linear;
+}
