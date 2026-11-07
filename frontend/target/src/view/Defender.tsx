@@ -201,7 +201,7 @@ function withAside(topic: string): AsideGroup[] {
             links: [`Learn more about ${topic}`],
         },
         { heading: 'Have a question?', links: ['Get help'] },
-        { heading: 'Who\u2019s protecting me?', links: ['Manage providers'] },
+        { heading: 'Who’s protecting me?', links: ['Manage providers'] },
         { heading: 'Help improve Windows Security', links: ['Give us feedback'] },
         PRIVACY_ASIDE,
     ]
@@ -248,7 +248,7 @@ function HomePage({ onOpen }: { onOpen: (page: PageId) => void }) {
         <Box>
             <PageHeader
                 title="Security at a glance"
-                subtitle="See what\u2019s happening with the security and health of your device and take any actions needed."
+                subtitle="See what’s happening with the security and health of your device and take any actions needed."
             />
 
             <Grid
@@ -429,14 +429,14 @@ function AccountPage() {
             <Section
                 icon="lock"
                 title="Windows Hello"
-                status="Use fingerprint or face recognition to sign in to your device. Windows Hello isn\u2019t available on this device."
+                status="Use fingerprint or face recognition to sign in to your device. Windows Hello isn’t available on this device."
             >
                 <WinLink>Learn more</WinLink>
             </Section>
             <Section
                 icon="key"
                 title="Dynamic lock"
-                status="Automatically lock your device when you\u2019re away."
+                status="Automatically lock your device when you’re away."
             >
                 <WinLink>Change Dynamic lock settings</WinLink>
             </Section>
@@ -578,7 +578,7 @@ function FamilyPage() {
     return (
         <PageLayout
             title="Family options"
-            subtitle="Get what you need to simplify your family\u2019s digital life."
+            subtitle="Get what you need to simplify your family’s digital life."
             aside={withAside('Family options')}
         >
             <Section
@@ -590,8 +590,8 @@ function FamilyPage() {
             </Section>
             <Section
                 icon="laptop"
-                title="See your family\u2019s devices"
-                status="Check the health and safety of your family\u2019s Windows 10 devices."
+                title="See your family’s devices"
+                status="Check the health and safety of your family’s Windows 10 devices."
             >
                 <WinLink>View devices</WinLink>
             </Section>
