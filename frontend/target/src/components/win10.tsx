@@ -5,7 +5,7 @@ import type { GlyphName } from './glyphs'
 import { FONT_SEMIBOLD, WIN } from './tokens'
 import './win10.css'
 
-/** Standard Win10 button: gray by default, accent-blue when `primary`. */
+/** Standard Win10 dark button: gray by default, accent-blue when `primary`. */
 export function WinButton({
     children,
     primary = false,
@@ -23,10 +23,10 @@ export function WinButton({
             px="16px"
             fontSize="14px"
             bg={primary ? WIN.accent : WIN.buttonGray}
-            color={primary ? '#FFFFFF' : '#000000'}
+            color={WIN.text}
             border="2px solid transparent"
             _hover={{ borderColor: '#7A7A7A' }}
-            _active={{ bg: primary ? WIN.accentDark : '#999999' }}
+            _active={{ bg: primary ? WIN.accentDark : WIN.buttonActive }}
         >
             {children}
         </chakra.button>

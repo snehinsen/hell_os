@@ -15,8 +15,9 @@ export interface SettingsCategoryDef {
 }
 
 /**
- * Mirrors the Windows 10 (20H2) Settings app: same categories, same order,
- * same tile descriptions and the same sub-page lists.
+ * Mirrors the Windows 10 (21H1+) Settings app: same categories, same order,
+ * same tile text (en-GB spelling, as on the reference VM) and the same
+ * sub-page lists.
  */
 export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     {
@@ -59,7 +60,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     },
     {
         id: 'phone',
-        title: 'Phone',
+        title: 'Mobile devices',
         description: 'Link your Android, iPhone',
         icon: 'phone',
         pages: [{ id: 'yourphone', title: 'Your Phone', icon: 'phone' }],
@@ -67,7 +68,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     {
         id: 'network',
         title: 'Network & Internet',
-        description: 'Wi-Fi, airplane mode, VPN',
+        description: 'WiFi, flight mode, VPN',
         icon: 'network',
         pages: [
             { id: 'status', title: 'Status', icon: 'globe' },
@@ -75,7 +76,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
             { id: 'ethernet', title: 'Ethernet', icon: 'ethernet' },
             { id: 'dialup', title: 'Dial-up', icon: 'dialup' },
             { id: 'vpn', title: 'VPN', icon: 'vpn' },
-            { id: 'airplane', title: 'Airplane mode', icon: 'airplane' },
+            { id: 'airplane', title: 'Flight mode', icon: 'airplane' },
             { id: 'hotspot', title: 'Mobile hotspot', icon: 'hotspot' },
             { id: 'datausage', title: 'Data usage', icon: 'dataUsage' },
             { id: 'proxy', title: 'Proxy', icon: 'globe' },
@@ -83,12 +84,12 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     },
     {
         id: 'personalization',
-        title: 'Personalization',
-        description: 'Background, lock screen, colors',
+        title: 'Personalisation',
+        description: 'Background, lock screen, colours',
         icon: 'personalization',
         pages: [
             { id: 'background', title: 'Background', icon: 'picture' },
-            { id: 'colors', title: 'Colors', icon: 'color' },
+            { id: 'colors', title: 'Colours', icon: 'color' },
             { id: 'lockscreen', title: 'Lock screen', icon: 'lock' },
             { id: 'themes', title: 'Themes', icon: 'themes' },
             { id: 'fonts', title: 'Fonts', icon: 'font' },
@@ -99,7 +100,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     {
         id: 'apps',
         title: 'Apps',
-        description: 'Uninstall, defaults, optional features',
+        description: 'Uninstall, defaults',
         icon: 'apps',
         pages: [
             { id: 'features', title: 'Apps & features', icon: 'apps' },
@@ -139,7 +140,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     {
         id: 'gaming',
         title: 'Gaming',
-        description: 'Xbox Game Bar, captures, Game Mode',
+        description: 'Game Bar, captures, Game Mode',
         icon: 'gaming',
         pages: [
             { id: 'gamebar', title: 'Xbox Game Bar', icon: 'gaming' },
@@ -158,7 +159,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
             { id: 'cursor', title: 'Mouse pointer', icon: 'cursor' },
             { id: 'textcursor', title: 'Text cursor', icon: 'keyboard' },
             { id: 'magnifier', title: 'Magnifier', icon: 'magnifier' },
-            { id: 'colorfilters', title: 'Color filters', icon: 'color' },
+            { id: 'colorfilters', title: 'Colour filters', icon: 'color' },
             { id: 'highcontrast', title: 'High contrast', icon: 'contrast' },
             { id: 'narrator', title: 'Narrator', icon: 'narrator' },
             { id: 'audio', title: 'Audio', icon: 'audio' },
@@ -187,7 +188,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
         pages: [
             { id: 'general', title: 'General', icon: 'lock' },
             { id: 'speech', title: 'Speech', icon: 'speech' },
-            { id: 'inking', title: 'Inking & typing personalization', icon: 'pen' },
+            { id: 'inking', title: 'Inking & typing personalisation', icon: 'pen' },
             { id: 'diagnostics', title: 'Diagnostics & feedback', icon: 'info' },
             { id: 'activity', title: 'Activity history', icon: 'history' },
             { id: 'location', title: 'Location', icon: 'location' },
@@ -205,7 +206,7 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
         icon: 'update',
         pages: [
             { id: 'windowsupdate', title: 'Windows Update', icon: 'update' },
-            { id: 'delivery', title: 'Delivery Optimization', icon: 'download' },
+            { id: 'delivery', title: 'Delivery Optimisation', icon: 'download' },
             { id: 'security', title: 'Windows Security', icon: 'shield' },
             { id: 'backup', title: 'Backup', icon: 'upload' },
             { id: 'troubleshoot', title: 'Troubleshoot', icon: 'troubleshoot' },

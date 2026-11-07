@@ -1,19 +1,37 @@
-/** Windows 10 design tokens (light theme) shared by the HELL Settings / Defender UIs. */
+/** Windows 10 design tokens (DARK theme — the Target VM is always in dark mode). */
 
 export const WIN = {
     accent: '#0078D7',
     accentDark: '#005A9E',
-    link: '#0067B8',
-    text: '#000000',
-    secondary: '#666666',
-    hover: '#E6E6E6',
-    hoverLight: '#EDEDED',
-    border: '#CCCCCC',
-    buttonGray: '#CCCCCC',
-    green: '#107C10',
+    link: '#3A96DD',
+
+    text: '#FFFFFF',
+    secondary: '#BDBDBD',
+
+    hover: '#2B2B2B',
+    hoverLight: '#232323',
+    selected: '#333333',
+    border: '#404040',
+
+    buttonGray: '#333333',
+    buttonActive: '#555555',
+
+    green: '#6CCB5F',
     yellow: '#FFB900',
-    red: '#E81123',
+    red: '#FF99A4',
     white: '#FFFFFF',
+    black: '#000000',
+
+    /** Settings: home body / profile band / sub-page background / inputs / popups */
+    band: '#1F1F1F',
+    page: '#191919',
+    input: '#1F1F1F',
+    inputBorder: '#8E8E8E',
+    popup: '#2B2B2B',
+
+    /** Windows Security: left rail / content area */
+    defenderRail: '#171717',
+    defenderContent: '#202020',
 } as const
 
 export const FONT_UI = '"Segoe UI", "Segoe UI Variable", Arial, sans-serif'

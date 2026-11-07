@@ -254,13 +254,13 @@ function DisplayPage() {
                 },
                 {
                     heading: 'Sleep better',
-                    text: 'Night light can help you get to sleep by displaying warmer colors at night.',
+                    text: 'Night light can help you get to sleep by displaying warmer colours at night.',
                     links: ['Set up Night light'],
                 },
                 ...HELP_GROUP,
             ]}
         >
-            <SectionTitle>Brightness and color</SectionTitle>
+            <SectionTitle>Brightness and colour</SectionTitle>
             <Labeled label="Change brightness for the built-in display">
                 <input
                     className="win-range"
@@ -442,7 +442,7 @@ function NetworkStatusPage() {
                 <WinLink>Windows Firewall</WinLink>
             </Box>
             <Box mt="6px">
-                <WinLink>Network and Sharing Center</WinLink>
+                <WinLink>Network and Sharing Centre</WinLink>
             </Box>
             <Box mt="6px">
                 <WinLink>Network reset</WinLink>
@@ -457,7 +457,7 @@ function WifiPage() {
             aside={[
                 {
                     heading: 'Related settings',
-                    links: ['Change adapter options', 'Change advanced sharing options', 'Network and Sharing Center', 'Windows Firewall'],
+                    links: ['Change adapter options', 'Change advanced sharing options', 'Network and Sharing Centre', 'Windows Firewall'],
                 },
                 ...HELP_GROUP,
             ]}
@@ -505,15 +505,15 @@ function BackgroundPage() {
                 width="280px"
                 height="170px"
                 mb="24px"
-                border="8px solid #333"
+                border="8px solid #555555"
                 borderBottomWidth="14px"
                 background="linear-gradient(135deg, #0a2f6b 0%, #0078D7 55%, #4cc2ff 100%)"
             />
             <Labeled label="Background">
-                <WinSelect options={['Picture', 'Solid color', 'Slideshow']} />
+                <WinSelect options={['Picture', 'Solid colour', 'Slideshow']} />
             </Labeled>
             <Labeled label="Choose a fit">
-                <WinSelect options={['Fill', 'Fit', 'Stretch', 'Tile', 'Center', 'Span']} />
+                <WinSelect options={['Fill', 'Fit', 'Stretch', 'Tile', 'Centre', 'Span']} />
             </Labeled>
         </TwoColumn>
     )
@@ -554,7 +554,12 @@ function AppsFeaturesPage() {
 
             <SectionTitle>Apps &amp; features</SectionTitle>
             {apps.map(([name, size]) => (
-                <Flex key={name} justify="space-between" py="10px" borderBottom="1px solid #E6E6E6">
+                <Flex
+                    key={name}
+                    justify="space-between"
+                    py="10px"
+                    borderBottom={`1px solid ${WIN.border}`}
+                >
                     <Text fontSize="14px">{name}</Text>
                     <Text fontSize="12px" color={WIN.secondary}>
                         {size}
@@ -585,7 +590,7 @@ function YourInfoPage() {
                     align="center"
                     justify="center"
                 >
-                    <Icon name="contact" size={52} color="#888888" />
+                    <Icon name="contact" size={52} color="#333333" />
                 </Flex>
                 <Box>
                     <Text fontFamily={FONT_SEMIBOLD} fontSize="20px">
