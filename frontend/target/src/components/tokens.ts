@@ -1,4 +1,4 @@
-/** Windows 10 design tokens (DARK theme — the Target VM is always in dark mode). */
+/** Windows 10 design tokens (DARK theme — the Target VM is always Win10 in dark mode). */
 
 export const WIN = {
     accent: '#0078D7',
@@ -22,16 +22,18 @@ export const WIN = {
     white: '#FFFFFF',
     black: '#000000',
 
-    /** Settings: home body / profile band / sub-page background / inputs / popups */
+    /** Settings: profile band on the home page / inputs / popups */
     band: '#1F1F1F',
-    page: '#191919',
     input: '#1F1F1F',
     inputBorder: '#8E8E8E',
     popup: '#2B2B2B',
 
-    /** Windows Security: left rail / content area */
+    /** Settings sub-page background: pure black on Win10 dark */
+    page: '#000000',
+
+    /** Windows Security: left rail / content area (content is pure black on Win10 dark) */
     defenderRail: '#171717',
-    defenderContent: '#202020',
+    defenderContent: '#000000',
 } as const
 
 export const FONT_UI = '"Segoe UI", "Segoe UI Variable", Arial, sans-serif'

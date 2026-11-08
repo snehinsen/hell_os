@@ -1,7 +1,17 @@
+/* Fake Windows 10 "Working on updates" screen */
+
+.update,
+.update * {
+    /* the real screen shows no mouse cursor */
+    cursor: none;
+    user-select: none;
+}
+
 .update {
     width: 100%;
     height: 100%;
     min-height: 100vh;
+    overflow: hidden;
 
     display: flex;
     align-items: center;
@@ -14,31 +24,73 @@
 }
 
 .update-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     width: min(650px, 85%);
 }
 
 .update h1 {
-    margin-top: 50px;
-    font-size: 30px;
-    font-weight: 400;
+    margin: 36px 0 0;
+    font-size: 28px;
+    font-weight: 300;
 }
 
 .update p {
-    font-size: 17px;
+    margin: 12px 0 0;
+    font-size: 18px;
+    font-weight: 300;
 }
 
-.update .percentage {
-    margin-top: 35px;
-    font-size: 24px;
+.update .update-percent {
+    margin-top: 24px;
 }
 
+/* Windows-style spinner: five dots that orbit, bunch up and fade */
 .update-spinner {
-    width: 40px;
-    height: 40px;
+    position: relative;
+    width: 44px;
+    height: 44px;
+}
 
-    border: 3px solid rgba(255, 255, 255, 0.35);
-    border-top-color: #ffffff;
+.update-dot {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    animation: update-orbit 3.2s ease-in-out infinite;
+}
+
+.update-dot::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
     border-radius: 50%;
+    background: #ffffff;
+}
 
-    animation: hell-spin 1s linear infinite;
+@keyframes update-orbit {
+    0% {
+        transform: rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    60% {
+        transform: rotate(360deg);
+        opacity: 1;
+    }
+    85% {
+        transform: rotate(540deg);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(720deg);
+        opacity: 0;
+    }
 }

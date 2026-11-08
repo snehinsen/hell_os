@@ -1,29 +1,13 @@
-import { useEffect } from 'react'
 import './App.css'
-import {Settings} from "./view/Settings.tsx";
-import {Defender} from "./view/Defender.tsx";
-import {Update} from "./view/Update.tsx";
+import { Settings } from './view/Settings.tsx'
+import { Defender } from './view/Defender.tsx'
+import { Update } from './view/Update.tsx'
 
 type AppType = 'settings' | 'defender' | 'update'
-
-
-
 
 function App() {
     const appType = new URLSearchParams(window.location.search)
         .get('app') as AppType | null
-
-    useEffect(() => {
-        const titles: Record<AppType, string> = {
-            settings: 'HELL Settings',
-            defender: 'HELL Defender',
-            update: 'HELL Update',
-        }
-
-        if (appType) {
-            document.title = titles[appType]
-        }
-    }, [appType])
 
     switch (appType) {
         case 'settings':
