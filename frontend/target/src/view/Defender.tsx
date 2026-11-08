@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Box, Flex, Grid, Text, chakra } from '@chakra-ui/react'
 import { Icon } from '../components/Icon'
 import type { GlyphName } from '../components/glyphs'
+import { TitleBar } from '../components/TitleBar'
 import { WinButton, WinLink } from '../components/win10'
 import { FONT_LIGHT, FONT_SEMIBOLD, FONT_UI, WIN } from '../components/tokens'
 import '../components/win10.css'
@@ -41,8 +42,8 @@ const NAV_ITEMS: NavItem[] = [
 
 const SETTINGS_ITEM: NavItem = { id: 'settings', title: 'Settings', icon: 'settings' }
 
-const RAIL_BG = '#E6E6E6'
-const CONTENT_BG = '#F3F3F3'
+const RAIL_BG = WIN.defenderRail
+const CONTENT_BG = WIN.defenderContent
 
 /* ------------------------------------------------------------------ */
 /* Shared building blocks                                              */
@@ -77,7 +78,7 @@ function StatusIcon({
                     align="center"
                     justify="center"
                 >
-                    <Icon name="check" size={Math.round(badgeSize * 0.6)} color="#FFFFFF" />
+                    <Icon name="check" size={Math.round(badgeSize * 0.6)} color="#000000" />
                 </Flex>
             )}
         </Box>
@@ -271,7 +272,7 @@ function HomePage({ onOpen }: { onOpen: (page: PageId) => void }) {
                             minHeight="170px"
                             padding="20px"
                             border="2px solid transparent"
-                            _hover={{ bg: '#E6E6E6' }}
+                            _hover={{ bg: WIN.hover }}
                             onClick={() => onOpen(tile.page)}
                         >
                             <Box mb="16px">
@@ -647,8 +648,8 @@ function NavButton({
             height="44px"
             width="100%"
             textAlign="left"
-            bg={selected ? '#D6D6D6' : 'transparent'}
-            _hover={{ bg: selected ? '#D6D6D6' : '#DADADA' }}
+            bg={selected ? WIN.selected : 'transparent'}
+            _hover={{ bg: selected ? WIN.selected : WIN.hover }}
             title={item.title}
             aria-current={selected ? 'page' : undefined}
             onClick={onClick}
@@ -704,64 +705,74 @@ export function Defender() {
 
     return (
         <Flex
-            className="win-light"
+            className="win-dark"
+            direction="column"
             height="100vh"
             overflow="hidden"
             bg={CONTENT_BG}
-            color="#000000"
+            color={WIN.text}
             fontFamily={FONT_UI}
         >
-            {/* Left navigation rail */}
-            <Flex
-                as="nav"
-                direction="column"
-                justify="space-between"
-                width={expanded ? '260px' : '48px'}
-                flexShrink={0}
-                bg={RAIL_BG}
-                transition="width 150ms ease"
-                overflow="hidden"
-            >
-                <Box>
-                    <chakra.button
-                        type="button"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        width="48px"
-                        height="44px"
-                        aria-label="Toggle navigation"
-                        _hover={{ bg: '#DADADA' }}
-                        onClick={() => setExpanded(value => !value)}
-                    >
-                        <Icon name="hamburger" size={18} />
-                    </chakra.button>
+            <TitleBar
+                title="Windows Security"
+                background={CONTENT_BG}
+                canGoBack={page !== 'home'}
+                onBack={() => setPage('home')}
+            />
 
-                    <Box mt="4px">
-                        {NAV_ITEMS.map(item => (
-                            <NavButton
-                                key={item.id}
-                                item={item}
-                                selected={page === item.id}
-                                expanded={expanded}
-                                onClick={() => setPage(item.id)}
-                            />
-                        ))}
+            <Flex flex="1" minHeight="0" overflow="hidden">
+                {/* Left navigation rail */}
+                <Flex
+                    as="nav"
+                    direction="column"
+                    justify="space-between"
+                    width={expanded ? '260px' : '48px'}
+                    flexShrink={0}
+                    bg={RAIL_BG}
+                    transition="width 150ms ease"
+                    overflow="hidden"
+                >
+                    <Box>
+                        <chakra.button
+                            type="button"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width="48px"
+                            height="44px"
+                            aria-label="Toggle navigation"
+                            _hover={{ bg: WIN.hover }}
+                            onClick={() => setExpanded(value => !value)}
+                        >
+                            <Icon name="hamburger" size={18} />
+                        </chakra.button>
+
+                        <Box mt="4px">
+                            {NAV_ITEMS.map(item => (
+                                <NavButton
+                                    key={item.id}
+                                    item={item}
+                                    selected={page === item.id}
+                                    expanded={expanded}
+                                    onClick={() => setPage(item.id)}
+                                />
+                            ))}
+                        </Box>
                     </Box>
+
+                    <NavButton
+                        item={SETTINGS_ITEM}
+                        selected={page === 'settings'}
+                        expanded={expanded}
+                        onClick={() => setPage('settings')}
+                    />
+                </Flex>
+
+                {/* Page content */}
+                <Box flex="1" minWidth="0" overflowY="auto" px="40px" py="28px">
+                    {content}
                 </Box>
-
-                <NavButton
-                    item={SETTINGS_ITEM}
-                    selected={page === 'settings'}
-                    expanded={expanded}
-                    onClick={() => setPage('settings')}
-                />
             </Flex>
-
-            {/* Page content */}
-            <Box flex="1" minWidth="0" overflowY="auto" px="40px" py="28px">
-                {content}
-            </Box>
         </Flex>
     )
 }

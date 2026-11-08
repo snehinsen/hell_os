@@ -1,7 +1,7 @@
-/* HELL Defender (Windows Security) — view-specific styles.
-   Layout and colors are handled by Chakra props in Defender.tsx; shared Win10
+/* HELL Defender (Windows Security) — view-specific styles (dark).
+   Layout and colours are handled by Chakra props in Defender.tsx; shared Win10
    controls (progress bar, scrollbars, focus rectangles) live in components/win10.css. */
 
-.win-light nav button {
+.win-dark nav button {
     user-select: none;
 }

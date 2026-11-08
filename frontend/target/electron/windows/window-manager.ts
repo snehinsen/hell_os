@@ -11,6 +11,14 @@ export type HellApp = 'settings' | 'defender' | 'update'
 
 const windows = new Map<HellApp, BrowserWindow>()
 
+/*
+ * Settings and Windows Security are UWP apps on real Windows 10: no native
+ * frame, a custom title bar (back arrow + title) and the system caption
+ * buttons drawn on top. `titleBarStyle: 'hidden'` + `titleBarOverlay` gives
+ * exactly that; the renderer draws the left part (see components/TitleBar).
+ * The overlay colour must match the title bar background in the renderer.
+ * The VM is always in dark mode, so everything here is dark.
+ */
 const windowConfig: Record<HellApp, Electron.BrowserWindowConstructorOptions> = {
     settings: {
         width: 1050,
@@ -18,6 +26,13 @@ const windowConfig: Record<HellApp, Electron.BrowserWindowConstructorOptions> = 
         minWidth: 800,
         minHeight: 550,
         title: 'Settings',
+        backgroundColor: '#000000',
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: '#000000',
+            symbolColor: '#FFFFFF',
+            height: 32,
+        },
     },
 
     defender: {
@@ -26,6 +41,13 @@ const windowConfig: Record<HellApp, Electron.BrowserWindowConstructorOptions> = 
         minWidth: 750,
         minHeight: 500,
         title: 'Windows Security',
+        backgroundColor: '#202020',
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: '#202020',
+            symbolColor: '#FFFFFF',
+            height: 32,
+        },
     },
 
     update: {
@@ -34,6 +56,7 @@ const windowConfig: Record<HellApp, Electron.BrowserWindowConstructorOptions> = 
         title: 'Windows Update',
         fullscreen: true,
         autoHideMenuBar: true,
+        backgroundColor: '#f3f3f3',
     },
 }
 
@@ -47,8 +70,6 @@ export function createHellWindow(appType: HellApp): BrowserWindow {
 
     const window = new BrowserWindow({
         ...windowConfig[appType],
-
-        backgroundColor: '#f3f3f3',
 
         webPreferences: {
             preload: PRELOAD_PATH,
