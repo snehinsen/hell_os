@@ -22,7 +22,8 @@ function PageTitle({ children }: { children: ReactNode }) {
 
 /**
  * One Settings page. The content comes from pageSpecs.ts; every control that
- * is "blocked" shows its message from restrictions.ts when touched.
+ * is "blocked" shows its message from restrictions.ts when touched, and
+ * controls without a restriction are real, persistent settings.
  */
 export function PageContent({
     categoryId,
@@ -31,14 +32,15 @@ export function PageContent({
     categoryId: string
     pageId: string
 }) {
+    const pageKey = `${categoryId}/${pageId}`
     const title = findPage(categoryId, pageId)?.title ?? 'Settings'
-    const spec = PAGE_SPECS[`${categoryId}/${pageId}`] ?? FALLBACK_SPEC
+    const spec = PAGE_SPECS[pageKey] ?? FALLBACK_SPEC
 
     return (
         <RestrictionProvider>
             <Box>
                 <PageTitle>{title}</PageTitle>
-                <SpecPage spec={spec} />
+                <SpecPage spec={spec} pageKey={pageKey} />
             </Box>
         </RestrictionProvider>
     )
