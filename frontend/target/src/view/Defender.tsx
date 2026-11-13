@@ -13,6 +13,7 @@ import {
     type PageId,
 } from './defender/content'
 import { DefenderContext } from './defender/context'
+import { HealthPage } from './defender/HealthPage'
 import {
     AccountPage,
     AllowedPage,
@@ -20,7 +21,6 @@ import {
     DeviceSecurityPage,
     FamilyPage,
     FirewallPage,
-    HealthPage,
     HistoryPage,
     HomePage,
     ScanOptionsPage,
