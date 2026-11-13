@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { Box, Flex, Text, chakra } from '@chakra-ui/react'
 import { Icon } from './Icon'
 import type { GlyphName } from './glyphs'
+import { loadSetting, saveSetting } from './settingsStore'
 import { FONT_SEMIBOLD, WIN } from './tokens'
 import './win10.css'
 
@@ -55,15 +56,33 @@ export function WinLink({
     )
 }
 
-/** On/Off switch with the label to its right, like Settings. */
+/**
+ * On/Off switch with the label to its right, like Settings.
+ * With a `storageKey` the value is remembered between sessions.
+ */
 export function WinToggle({
     defaultOn = false,
     label,
+    storageKey,
 }: {
     defaultOn?: boolean
     label?: string
+    storageKey?: string
 }) {
-    const [on, setOn] = useState(defaultOn)
+    const [on, setOn] = useState(() => {
+        if (storageKey) {
+            const stored = loadSetting(storageKey)
+            if (stored !== null) return stored === '1'
+        }
+
+        return defaultOn
+    })
+
+    const toggle = () => {
+        const next = !on
+        setOn(next)
+        if (storageKey) saveSetting(storageKey, next ? '1' : '0')
+    }
 
     return (
         <Flex align="center" gap="12px">
@@ -73,7 +92,7 @@ export function WinToggle({
                 aria-checked={on}
                 aria-label={label}
                 className={`win-toggle${on ? ' on' : ''}`}
-                onClick={() => setOn(value => !value)}
+                onClick={toggle}
             >
                 <span className="win-toggle-knob" />
             </button>
@@ -82,16 +101,38 @@ export function WinToggle({
     )
 }
 
-/** Native drop-down styled like a Win10 combo box. */
+/**
+ * Native drop-down styled like a Win10 combo box.
+ * With a `storageKey` the selection is remembered between sessions.
+ */
 export function WinSelect({
     options,
     defaultValue,
+    storageKey,
+    onChange,
 }: {
     options: string[]
     defaultValue?: string
+    storageKey?: string
+    onChange?: (value: string) => void
 }) {
+    const [value, setValue] = useState(() => {
+        const stored = storageKey ? loadSetting(storageKey) : null
+        if (stored !== null && options.includes(stored)) return stored
+
+        return defaultValue ?? options[0]
+    })
+
     return (
-        <select className="win-select" defaultValue={defaultValue ?? options[0]}>
+        <select
+            className="win-select"
+            value={value}
+            onChange={event => {
+                setValue(event.target.value)
+                if (storageKey) saveSetting(storageKey, event.target.value)
+                onChange?.(event.target.value)
+            }}
+        >
             {options.map(option => (
                 <option key={option}>{option}</option>
             ))}

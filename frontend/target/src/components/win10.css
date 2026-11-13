@@ -83,6 +83,7 @@
 /* Drop-down */
 .win-select {
     min-width: 220px;
+    max-width: 100%;
     height: 32px;
     padding: 0 8px;
     color: #fff;
@@ -120,4 +121,20 @@
     height: 100%;
     background: #0078d7;
     transition: width 250ms linear;
+}
+
+/* Progress bar (indeterminate: "Checking for updates...") */
+.win-progress.indeterminate > div {
+    width: 30%;
+    transition: none;
+    animation: win-indeterminate 1.4s linear infinite;
+}
+
+@keyframes win-indeterminate {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(340%);
+    }
 }
