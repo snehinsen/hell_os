@@ -5,7 +5,12 @@ import type { GlyphName } from '../../components/glyphs'
  *
  * Adding a new blocked control = add an element here and a matching entry in
  * restrictions.ts. `restriction` is the id of the "blocked" message; an element
- * with no `restriction` behaves like a normal, working control.
+ * with NO `restriction` is a real, working control: toggles and drop-downs
+ * remember their value between sessions (see components/settingsStore.ts).
+ *
+ * A page that contains at least one blocked control automatically gets the
+ * Win10 "Some settings are hidden or managed by your organization" banner
+ * under its title (override with `managed`).
  */
 
 export interface AsideGroup {
@@ -14,25 +19,40 @@ export interface AsideGroup {
     links: string[]
 }
 
+export interface AppEntry {
+    name: string
+    size: string
+    bytes: number
+    /** ISO date, e.g. 2026-06-12 */
+    date: string
+}
+
 export type SpecElement =
     | { t: 'section'; title: string }
     | { t: 'text'; text: string; muted?: boolean }
     | { t: 'toggle'; label: string; on?: boolean; restriction?: string }
-    | { t: 'select'; label: string; options: string[]; restriction?: string; hint?: string }
+    | { t: 'select'; label: string; options: string[]; restriction?: string }
     | { t: 'range'; label: string; value: number; restriction: string }
     | { t: 'button'; label: string; restriction?: string; primary?: boolean }
     | { t: 'link'; label: string; restriction?: string }
     | { t: 'row'; icon?: GlyphName; iconColor?: string; title: string; description?: string; restriction?: string }
     | { t: 'kv'; label: string; value: string }
     | { t: 'status'; icon: GlyphName; color: string; title: string; subtitle?: string }
-    | { t: 'app'; name: string; size: string }
+    | { t: 'applist'; apps: AppEntry[] }
     | { t: 'preview' }
     | { t: 'profile' }
     | { t: 'updatestatus' }
+    | { t: 'activehours' }
+    | { t: 'updatehistory' }
+    | { t: 'refreshrate' }
 
 export interface PageSpec {
     related?: AsideGroup[]
     elements: SpecElement[]
+    /** Force the "managed by your organization" banner on or off. */
+    managed?: boolean
+    /** Windows Update variant: adds "View configured update policies". */
+    policyLink?: boolean
 }
 
 const GREEN = '#6CCB5F'
@@ -40,6 +60,7 @@ const AMBER = '#FFB900'
 const RED = '#F1707B'
 
 export const FALLBACK_SPEC: PageSpec = {
+    managed: true,
     elements: [
         {
             t: 'text',
@@ -48,6 +69,17 @@ export const FALLBACK_SPEC: PageSpec = {
         },
     ],
 }
+
+const INSTALLED_APPS: AppEntry[] = [
+    { name: '3D Viewer', size: '16.0 KB', bytes: 16384, date: '2026-06-12' },
+    { name: 'Calculator', size: '24.0 KB', bytes: 24576, date: '2026-06-12' },
+    { name: 'Camera', size: '16.0 KB', bytes: 16384, date: '2026-06-12' },
+    { name: 'Mail and Calendar', size: '1.20 MB', bytes: 1258291, date: '2026-07-03' },
+    { name: 'Microsoft Edge', size: '178 MB', bytes: 186646528, date: '2026-10-14' },
+    { name: 'Notepad', size: '184 KB', bytes: 188416, date: '2026-06-12' },
+    { name: 'Paint 3D', size: '16.0 KB', bytes: 16384, date: '2026-06-12' },
+    { name: 'Windows Security', size: '1.00 MB', bytes: 1048576, date: '2026-06-12' },
+]
 
 export const PAGE_SPECS: Record<string, PageSpec> = {
     /* ================= System ================= */
@@ -69,9 +101,9 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
             { t: 'select', label: 'Change the size of text, apps, and other items', options: ['100% (Recommended)', '125%', '150%', '175%'], restriction: 'scale' },
             { t: 'select', label: 'Display resolution', options: ['1920 × 1080 (Recommended)', '1680 × 1050', '1600 × 900', '1366 × 768', '1280 × 720'], restriction: 'resolution' },
             { t: 'select', label: 'Display orientation', options: ['Landscape', 'Portrait', 'Landscape (flipped)', 'Portrait (flipped)'], restriction: 'orientation' },
-            // Deliberately NOT blocked.
+            // Deliberately NOT blocked: a real, working control.
             { t: 'section', title: 'Advanced display settings' },
-            { t: 'select', label: 'Refresh rate', options: ['60 Hertz', '59.94 Hertz'] },
+            { t: 'refreshrate' },
         ],
     },
 
@@ -90,7 +122,7 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         elements: [
             { t: 'toggle', label: 'Get notifications from apps and other senders', on: true, restriction: 'notifications' },
             { t: 'toggle', label: 'Show notifications on the lock screen', on: true, restriction: 'notifications' },
-            { t: 'toggle', label: 'Get tips, tricks, and suggestions as you use Windows', on: true, restriction: 'notifications' },
+            { t: 'toggle', label: 'Get tips, tricks, and suggestions as you use Windows', on: true },
         ],
     },
 
@@ -100,13 +132,14 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         ],
     },
 
+    // Desktop PC: no battery, so no "on battery power" options.
     'system/power': {
         related: [{ heading: 'Related settings', links: ['Additional power settings'] }],
         elements: [
             { t: 'section', title: 'Screen' },
-            { t: 'select', label: 'When plugged in, turn off after', options: ['Never', '10 minutes', '15 minutes'], restriction: 'sleep' },
+            { t: 'select', label: 'Turn off after', options: ['Never', '10 minutes', '15 minutes'], restriction: 'sleep' },
             { t: 'section', title: 'Sleep' },
-            { t: 'select', label: 'When plugged in, PC goes to sleep after', options: ['Never', '15 minutes', '30 minutes'], restriction: 'sleep' },
+            { t: 'select', label: 'PC goes to sleep after', options: ['Never', '15 minutes', '30 minutes'], restriction: 'sleep' },
             { t: 'section', title: 'Shutdown settings' },
             { t: 'toggle', label: 'Hibernate', restriction: 'hibernate' },
         ],
@@ -119,6 +152,18 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
             { t: 'section', title: 'Storage Sense' },
             { t: 'toggle', label: 'Storage Sense can automatically free up space by getting rid of files you don’t need, like temporary files and content in your recycle bin.', restriction: 'storagesense' },
             { t: 'link', label: 'Configure Storage Sense or run it now', restriction: 'storagesense' },
+        ],
+    },
+
+    'system/multitasking': {
+        elements: [
+            { t: 'section', title: 'Snap windows' },
+            { t: 'toggle', label: 'Arrange windows automatically by dragging them to the sides or corners of the screen', on: true },
+            { t: 'toggle', label: 'When I snap a window, automatically size it to fill available space', on: true },
+            { t: 'toggle', label: 'When I snap a window, show what I can snap next to it', on: true },
+            { t: 'section', title: 'Virtual desktops' },
+            { t: 'select', label: 'On the taskbar, show windows that are open on', options: ['Only the desktop I’m using', 'All desktops'] },
+            { t: 'select', label: 'Pressing Alt+Tab shows windows that are open on', options: ['Only the desktop I’m using', 'All desktops'] },
         ],
     },
 
@@ -137,8 +182,8 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
             { t: 'status', icon: 'shield', color: AMBER, title: 'Your PC is monitored and has some security recommendations.', subtitle: 'See details in Windows Security' },
             { t: 'section', title: 'Device specifications' },
             { t: 'kv', label: 'Device name', value: 'DESKTOP-H3LL0S1' },
-            { t: 'kv', label: 'Processor', value: 'Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz   1.80 GHz' },
-            { t: 'kv', label: 'Installed RAM', value: '8.00 GB (7.89 GB usable)' },
+            { t: 'kv', label: 'Processor', value: 'Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz   2.81 GHz' },
+            { t: 'kv', label: 'Installed RAM', value: '16.0 GB (15.9 GB usable)' },
             { t: 'kv', label: 'Device ID', value: '5E1F2A3C-7B40-4D9A-9C61-0AE4D8B2F713' },
             { t: 'kv', label: 'Product ID', value: '00331-10000-00001-AA512' },
             { t: 'kv', label: 'System type', value: '64-bit operating system, x64-based processor' },
@@ -188,16 +233,25 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         elements: [
             { t: 'select', label: 'Select your primary button', options: ['Left', 'Right'], restriction: 'primarybutton' },
             { t: 'range', label: 'Cursor speed', value: 10, restriction: 'mousespeed' },
-            { t: 'select', label: 'Choose how many lines to scroll each time', options: ['3 lines', '1 line', '5 lines'], restriction: 'mousespeed' },
-            { t: 'toggle', label: 'Scroll inactive windows when I hover over them', on: true, restriction: 'mousespeed' },
+            { t: 'select', label: 'Choose how many lines to scroll each time', options: ['3 lines', '1 line', '5 lines'] },
+            { t: 'toggle', label: 'Scroll inactive windows when I hover over them', on: true },
         ],
     },
 
     'devices/typing': {
         elements: [
-            { t: 'toggle', label: 'Autocorrect misspelled words', on: true, restriction: 'typing' },
-            { t: 'toggle', label: 'Highlight misspelled words', on: true, restriction: 'typing' },
+            { t: 'toggle', label: 'Autocorrect misspelled words', on: true },
+            { t: 'toggle', label: 'Highlight misspelled words', on: true },
             { t: 'toggle', label: 'Show text suggestions as I type on the hardware keyboard', restriction: 'typing' },
+        ],
+    },
+
+    'devices/autoplay': {
+        elements: [
+            { t: 'toggle', label: 'Use AutoPlay for all media and devices', on: true },
+            { t: 'section', title: 'Choose AutoPlay defaults' },
+            { t: 'select', label: 'Removable drive', options: ['Ask me every time', 'Open folder to view files (File Explorer)', 'Take no action'] },
+            { t: 'select', label: 'Memory card', options: ['Ask me every time', 'Open folder to view files (File Explorer)', 'Take no action'] },
         ],
     },
 
@@ -288,6 +342,17 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         ],
     },
 
+    'personalization/start': {
+        elements: [
+            { t: 'toggle', label: 'Show more tiles on Start' },
+            { t: 'toggle', label: 'Show app list in Start menu', on: true },
+            { t: 'toggle', label: 'Show recently added apps', on: true },
+            { t: 'toggle', label: 'Show most used apps', on: true },
+            { t: 'toggle', label: 'Use Start full screen' },
+            { t: 'toggle', label: 'Show recently opened items in Jump Lists on Start or the taskbar and in File Explorer Quick Access', on: true },
+        ],
+    },
+
     'personalization/taskbar': {
         elements: [
             { t: 'toggle', label: 'Lock the taskbar', on: true, restriction: 'taskbar' },
@@ -306,13 +371,7 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
             { t: 'link', label: 'Optional features', restriction: 'appsource' },
             { t: 'link', label: 'App execution aliases', restriction: 'appsource' },
             { t: 'section', title: 'Apps & features' },
-            { t: 'app', name: '3D Viewer', size: '16.0 KB' },
-            { t: 'app', name: 'Calculator', size: '24.0 KB' },
-            { t: 'app', name: 'Camera', size: '16.0 KB' },
-            { t: 'app', name: 'Mail and Calendar', size: '1.20 MB' },
-            { t: 'app', name: 'Microsoft Edge', size: '178 MB' },
-            { t: 'app', name: 'Paint 3D', size: '16.0 KB' },
-            { t: 'app', name: 'Windows Security', size: '1.00 MB' },
+            { t: 'applist', apps: INSTALLED_APPS },
         ],
     },
 
@@ -379,6 +438,9 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
             { t: 'toggle', label: 'Record game clips, screenshots, and broadcast using Game bar', on: true, restriction: 'gamebar' },
         ],
     },
+    'gaming/gamemode': {
+        elements: [{ t: 'toggle', label: 'Game Mode', on: true }],
+    },
     'ease/narrator': {
         elements: [{ t: 'toggle', label: 'Use Narrator', restriction: 'narrator' }],
     },
@@ -389,7 +451,28 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         elements: [{ t: 'toggle', label: 'Turn on high contrast', restriction: 'highcontrast' }],
     },
 
+    /* ================= Search ================= */
+    'search/permissions': {
+        elements: [
+            { t: 'select', label: 'SafeSearch', options: ['Moderate', 'Strict', 'Off'] },
+            { t: 'section', title: 'Cloud content search' },
+            { t: 'toggle', label: 'Microsoft account', on: true },
+            { t: 'toggle', label: 'Work or School account', on: true },
+            { t: 'section', title: 'History' },
+            { t: 'toggle', label: 'Search history on this device', on: true },
+            { t: 'button', label: 'Clear device search history' },
+        ],
+    },
+
     /* ================= Privacy ================= */
+    'privacy/general': {
+        elements: [
+            { t: 'toggle', label: 'Let apps use advertising ID to make ads more interesting to you based on your app activity (Turning this off will reset your ID.)', on: true },
+            { t: 'toggle', label: 'Let websites provide locally relevant content by accessing my language list', on: true },
+            { t: 'toggle', label: 'Let Windows track app launches to improve Start and search results', on: true },
+            { t: 'toggle', label: 'Show me suggested content in the Settings app', on: true },
+        ],
+    },
     'privacy/location': {
         elements: [
             { t: 'toggle', label: 'Location for this device', on: true, restriction: 'location' },
@@ -409,6 +492,8 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
 
     /* ================= Update & Security ================= */
     'update/windowsupdate': {
+        managed: true,
+        policyLink: true,
         related: [
             { heading: 'Looking for info on the latest updates?', links: ['Learn more'] },
             { heading: 'Related links', links: ['Check Storage', 'OS build info'] },
@@ -416,8 +501,8 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         elements: [
             { t: 'updatestatus' },
             { t: 'row', icon: 'pause', title: 'Pause updates for 7 days', description: 'Visit Advanced options to change the pause period', restriction: 'pauseupdates' },
-            { t: 'row', icon: 'clock', title: 'Change active hours', description: 'Currently 12:00 AM to 11:59 PM', restriction: 'activehours' },
-            { t: 'row', icon: 'history', title: 'View update history', description: 'See updates installed on your device', restriction: 'updatehistory' },
+            { t: 'activehours' },
+            { t: 'updatehistory' },
             { t: 'row', icon: 'settings', title: 'Advanced options', description: 'Additional update controls and settings', restriction: 'advancedupdate' },
         ],
     },

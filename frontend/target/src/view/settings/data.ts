@@ -15,9 +15,10 @@ export interface SettingsCategoryDef {
 }
 
 /**
- * Mirrors the Windows 10 (21H1+) Settings app: same categories, same order,
- * same tile text (en-GB spelling, as on the reference VM) and the same
- * sub-page lists.
+ * Mirrors the Windows 10 (21H1+) Settings app on a DESKTOP PC: same
+ * categories, same order, same tile text (en-GB spelling, as on the reference
+ * VM) and the same sub-page lists. Laptop-only pages (Battery, Touchpad) are
+ * deliberately absent, exactly like real Windows 10 on a desktop.
  */
 export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
     {
@@ -31,7 +32,6 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
             { id: 'notifications', title: 'Notifications & actions', icon: 'notifications' },
             { id: 'focus', title: 'Focus assist', icon: 'focus' },
             { id: 'power', title: 'Power & sleep', icon: 'power' },
-            { id: 'battery', title: 'Battery', icon: 'battery' },
             { id: 'storage', title: 'Storage', icon: 'storage' },
             { id: 'tablet', title: 'Tablet', icon: 'tablet' },
             { id: 'multitasking', title: 'Multitasking', icon: 'multitasking' },
@@ -51,7 +51,6 @@ export const SETTINGS_CATEGORIES: SettingsCategoryDef[] = [
             { id: 'bluetooth', title: 'Bluetooth & other devices', icon: 'bluetooth' },
             { id: 'printers', title: 'Printers & scanners', icon: 'printer' },
             { id: 'mouse', title: 'Mouse', icon: 'mouse' },
-            { id: 'touchpad', title: 'Touchpad', icon: 'touchpad' },
             { id: 'typing', title: 'Typing', icon: 'keyboard' },
             { id: 'pen', title: 'Pen & Windows Ink', icon: 'pen' },
             { id: 'autoplay', title: 'AutoPlay', icon: 'autoplay' },
