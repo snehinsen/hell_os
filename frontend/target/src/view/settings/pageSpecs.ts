@@ -8,6 +8,9 @@ import type { GlyphName } from '../../components/glyphs'
  * with NO `restriction` is a real, working control: toggles and drop-downs
  * remember their value between sessions (see components/settingsStore.ts).
  *
+ * `restriction` can also be an action id such as 'open:defender' (see
+ * RestrictionProvider), which runs instead of showing a dialog.
+ *
  * A page that contains at least one blocked control automatically gets the
  * Win10 "Some settings are hidden or managed by your organization" banner
  * under its title (override with `managed`).
@@ -507,18 +510,20 @@ export const PAGE_SPECS: Record<string, PageSpec> = {
         ],
     },
 
+    // Every row here is a real shortcut into the Windows Security window.
     'update/security': {
+        managed: false,
         elements: [
             { t: 'text', text: 'Windows Security is your home to view and manage the security and health of your device.' },
-            { t: 'button', label: 'Open Windows Security' },
+            { t: 'button', label: 'Open Windows Security', restriction: 'open:defender' },
             { t: 'section', title: 'Protection areas' },
-            { t: 'row', icon: 'shield', iconColor: RED, title: 'Virus & threat protection', description: 'Action needed' },
-            { t: 'row', icon: 'contact', iconColor: GREEN, title: 'Account protection', description: 'No action needed.' },
-            { t: 'row', icon: 'firewall', iconColor: AMBER, title: 'Firewall & network protection', description: 'Action recommended' },
-            { t: 'row', icon: 'appBrowser', iconColor: AMBER, title: 'App & browser control', description: 'Action recommended' },
-            { t: 'row', icon: 'laptop', title: 'Device security', description: 'View status and manage hardware security features' },
-            { t: 'row', icon: 'heart', iconColor: AMBER, title: 'Device performance & health', description: 'Action recommended' },
-            { t: 'row', icon: 'family', title: 'Family options', description: 'Manage how your family uses their devices.' },
+            { t: 'row', icon: 'shield', iconColor: RED, title: 'Virus & threat protection', description: 'Action needed', restriction: 'open:defender' },
+            { t: 'row', icon: 'contact', iconColor: GREEN, title: 'Account protection', description: 'No action needed.', restriction: 'open:defender' },
+            { t: 'row', icon: 'firewall', iconColor: AMBER, title: 'Firewall & network protection', description: 'Action recommended', restriction: 'open:defender' },
+            { t: 'row', icon: 'appBrowser', iconColor: AMBER, title: 'App & browser control', description: 'Action recommended', restriction: 'open:defender' },
+            { t: 'row', icon: 'laptop', title: 'Device security', description: 'View status and manage hardware security features', restriction: 'open:defender' },
+            { t: 'row', icon: 'heart', iconColor: AMBER, title: 'Device performance & health', description: 'Action recommended', restriction: 'open:defender' },
+            { t: 'row', icon: 'family', title: 'Family options', description: 'Manage how your family uses their devices.', restriction: 'open:defender' },
         ],
     },
 
