@@ -77,6 +77,9 @@ export function createHellWindow(appType: HellApp): BrowserWindow {
     const existing = windows.get(appType)
 
     if (existing && !existing.isDestroyed()) {
+        // A minimised window must be restored, or focus() does nothing visible.
+        if (existing.isMinimized()) existing.restore()
+        existing.show()
         existing.focus()
         return existing
     }

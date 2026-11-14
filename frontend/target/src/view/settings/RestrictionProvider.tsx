@@ -3,6 +3,19 @@ import { WinDialog } from '../../components/WinDialog'
 import { RestrictionContext } from './RestrictionContext'
 import { RESTRICTIONS } from './restrictions'
 
+/**
+ * Ids that are not "blocked" messages but real actions. Anything in pageSpecs
+ * can use them as its `restriction`; they run instead of showing a dialog.
+ */
+const ACTIONS: Record<string, () => void> = {
+    'open:defender': () => {
+        void window.hell?.openApp('defender')
+    },
+    'open:settings': () => {
+        void window.hell?.openApp('settings')
+    },
+}
+
 // Attempt counters live for the whole session (they survive page navigation),
 // so the same control keeps escalating no matter where the user wanders.
 const attempts: Record<string, number> = {}
@@ -17,6 +30,13 @@ export function RestrictionProvider({ children }: { children: ReactNode }) {
     const open = useRef(false)
 
     const deny = useCallback((id: string) => {
+        const action = ACTIONS[id]
+
+        if (action) {
+            action()
+            return
+        }
+
         // Ignore clicks (or slider drags) while a message is already showing.
         if (open.current) return
 

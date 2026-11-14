@@ -1,4 +1,5 @@
 import { app } from 'electron'
+import { registerIpc } from './ipc'
 import { createAllHellWindows } from './windows/window-manager'
 
 process.env.APP_ROOT = app.getAppPath()
@@ -6,6 +7,7 @@ process.env.APP_ROOT = app.getAppPath()
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
 app.whenReady().then(() => {
+  registerIpc()
   createAllHellWindows()
 
   app.on('activate', () => {

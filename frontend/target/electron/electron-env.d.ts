@@ -33,6 +33,9 @@ declare global {
       onMainProcessMessage(
           callback: (message: string) => void,
       ): () => void
+
+      /** Open (or focus) the Settings or Windows Security window. */
+      openApp(appType: 'settings' | 'defender'): Promise<boolean>
     }
   }
 }
