@@ -1,0 +1,11 @@
+package ca.tlcp.ai.hell_os.manager
+
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.window.ComposeViewport
+
+@OptIn(ExperimentalComposeUiApi::class)
+fun main() {
+    ComposeViewport {
+        App()
+    }
+}
