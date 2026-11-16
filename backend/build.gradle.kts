@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.3.21"
     kotlin("plugin.spring") version "2.3.21"
+    kotlin("plugin.serialization") version "2.3.21"
     id("org.springframework.boot") version "4.1.2"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.3.21"
@@ -31,6 +32,13 @@ dependencies {
     implementation("org.springframework.ai:spring-ai-markdown-document-reader")
     implementation("org.springframework.ai:spring-ai-starter-model-ollama")
     implementation("tools.jackson.module:jackson-module-kotlin")
+
+    // Wire protocol (shared with the Manager, see protocol/src)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
+
+    // Hibernate needs this dialect to talk to SQLite
+    implementation("org.hibernate.orm:hibernate-community-dialects")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.xerial:sqlite-jdbc")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
@@ -51,6 +59,10 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
     }
+
+    // The wire protocol lives once, at the repo root, and is compiled into both
+    // the backend and the Manager.
+    sourceSets.getByName("main").kotlin.srcDir("../protocol/src")
 }
 
 allOpen {

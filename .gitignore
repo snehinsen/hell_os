@@ -14,6 +14,13 @@ frontend/target/*.local
 frontend/manager/.idea
 backend/.idea
 
+# Secrets and local data: NEVER commit these
+frontend/target/hell.config.json
+backend/hell.db
+backend/hell.db-*
+*.db
+*.db-journal
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

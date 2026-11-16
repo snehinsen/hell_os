@@ -1,3 +1,32 @@
 spring:
   application:
     name: backend
+
+  # SQLite file holding API keys (hashed) and the event log.
+  # Override the location with HELL_DB_PATH. The parent directory must exist.
+  datasource:
+    url: jdbc:sqlite:${HELL_DB_PATH:hell.db}
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      # SQLite allows one writer at a time; a single connection avoids "database is locked".
+      maximum-pool-size: 1
+
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: ${PORT:8080}
+  # Uncomment when running behind a TLS-terminating reverse proxy so that the
+  # failed-login rate limiter sees real client IPs:
+  # forward-headers-strategy: native
+
+hell:
+  # The Target must send something at least this often or it is considered lost.
+  heartbeat-timeout-ms: 15000
+
+logging:
+  level:
+    ca.tlcp.ai.hell_os: INFO
