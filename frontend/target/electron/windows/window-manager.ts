@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { report } from '../report'
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -10,6 +11,12 @@ const DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 export type HellApp = 'settings' | 'defender' | 'update'
 
 const windows = new Map<HellApp, BrowserWindow>()
+
+const LABELS: Record<HellApp, string> = {
+    settings: 'Settings',
+    defender: 'Windows Security',
+    update: 'Update screen',
+}
 
 /*
  * Settings and Windows Security are UWP apps on real Windows 10: no native
@@ -73,6 +80,8 @@ const windowConfig: Record<HellApp, Electron.BrowserWindowConstructorOptions> = 
     },
 }
 
+const lastFocusReport = new Map<HellApp, number>()
+
 export function createHellWindow(appType: HellApp): BrowserWindow {
     const existing = windows.get(appType)
 
@@ -97,6 +106,7 @@ export function createHellWindow(appType: HellApp): BrowserWindow {
 
     windows.set(appType, window)
     window.menuBarVisible = false
+    report('window_opened', `${LABELS[appType]} window opened`)
 
     // Keep the native window title (shown in Alt+Tab / taskbar) fixed; never
     // let the web page's <title> / document.title replace it.
@@ -104,15 +114,19 @@ export function createHellWindow(appType: HellApp): BrowserWindow {
         event.preventDefault()
     })
 
-    window.webContents.on('did-finish-load', () => {
-        window.webContents.send(
-            'main-process-message',
-            new Date().toLocaleString(),
-        )
+    // Tell the human watching when the person in the VM switches to a window.
+    window.on('focus', () => {
+        const now = Date.now()
+
+        if (now - (lastFocusReport.get(appType) ?? 0) > 5_000) {
+            lastFocusReport.set(appType, now)
+            report('window_focused', `${LABELS[appType]} window focused`)
+        }
     })
 
     window.on('closed', () => {
         windows.delete(appType)
+        report('window_closed', `${LABELS[appType]} window closed`)
     })
 
     if (DEV_SERVER_URL) {
@@ -138,6 +152,44 @@ export function createAllHellWindows(): void {
     createHellWindow('settings')
     createHellWindow('defender')
     createHellWindow('update')
+}
+
+/** Closes one window. False if it wasn't open. */
+export function closeHellWindow(appType: HellApp): boolean {
+    const existing = windows.get(appType)
+
+    if (!existing || existing.isDestroyed()) return false
+
+    existing.close()
+    return true
+}
+
+/**
+ * Delivers a command to a window's renderer (e.g. "show this message box"),
+ * opening the window first if necessary and waiting until the page has loaded.
+ */
+export async function sendToHellWindow(
+    appType: HellApp,
+    command: string,
+    args: Record<string, string>,
+): Promise<void> {
+    const alreadyOpen = windows.has(appType)
+    const window = createHellWindow(appType)
+
+    if (window.webContents.isLoading()) {
+        await new Promise<void>(resolve => {
+            window.webContents.once('did-finish-load', () => resolve())
+        })
+    }
+
+    // A freshly created window needs a moment for React to mount and subscribe.
+    if (!alreadyOpen) {
+        await new Promise<void>(resolve => setTimeout(resolve, 700))
+    }
+
+    if (!window.isDestroyed()) {
+        window.webContents.send('hell:command', { command, args })
+    }
 }
 
 export function closeAllHellWindows(): void {

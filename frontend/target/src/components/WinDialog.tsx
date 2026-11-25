@@ -1,5 +1,6 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect } from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
+import { report } from './hellBridge'
 import { WinButton } from './win10'
 import { FONT_SEMIBOLD, WIN } from './tokens'
 
@@ -14,8 +15,8 @@ export function WinModal({
     onClose,
 }: {
     title: string
-    children?: ReactNode
-    actions: ReactNode
+    children?: React.ReactNode
+    actions: React.ReactNode
     onClose: () => void
 }) {
     useEffect(() => {
@@ -72,16 +73,25 @@ export function WinModal({
 /**
  * Simple message box: headline, a few lines of detail, one OK button.
  * Used for every "blocked" / "failed" message. Enter and Escape dismiss it.
+ *
+ * Every message the person in the VM sees is also reported to the human watching
+ * (unless `silent`, used for messages the Manager itself pushed).
  */
 export function WinDialog({
     headline,
     detail,
     onClose,
+    silent = false,
 }: {
     headline: string
     detail: string[]
     onClose: () => void
+    silent?: boolean
 }) {
+    useEffect(() => {
+        if (!silent) report('dialog', headline, detail.join(' / '))
+    }, [headline, detail, silent])
+
     useEffect(() => {
         const onKey = (event: KeyboardEvent) => {
             if (event.key === 'Enter') onClose()

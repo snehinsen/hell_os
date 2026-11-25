@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Box, Text } from '@chakra-ui/react'
+import { report } from '../../components/hellBridge'
 import { FONT_LIGHT } from '../../components/tokens'
 import { findPage } from './data'
 import { FALLBACK_SPEC, PAGE_SPECS } from './pageSpecs'
@@ -35,6 +36,11 @@ export function PageContent({
     const pageKey = `${categoryId}/${pageId}`
     const title = findPage(categoryId, pageId)?.title ?? 'Settings'
     const spec = PAGE_SPECS[pageKey] ?? FALLBACK_SPEC
+
+    // Let the human watching know which page the person in the VM is looking at.
+    useEffect(() => {
+        report('page_view', `Settings: ${title}`)
+    }, [title])
 
     return (
         <RestrictionProvider>

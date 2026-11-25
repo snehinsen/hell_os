@@ -1,0 +1,4 @@
+{
+  "backendUrl": "wss://your-backend.example.com/ws/target",
+  "targetKey": "hell_target_PASTE_THE_KEY_THE_BACKEND_PRINTED"
+}

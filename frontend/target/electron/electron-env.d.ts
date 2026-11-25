@@ -34,6 +34,14 @@ declare global {
           callback: (message: string) => void,
       ): () => void
 
+      /** A Manager command aimed at this window. Returns an unsubscribe function. */
+      onCommand(
+          callback: (command: string, args: Record<string, string>) => void,
+      ): () => void
+
+      /** Tell the human watching about something that just happened. */
+      report(kind: string, summary: string, detail?: string): void
+
       /** Open (or focus) the Settings or Windows Security window. */
       openApp(appType: 'settings' | 'defender'): Promise<boolean>
     }

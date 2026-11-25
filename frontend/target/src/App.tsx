@@ -1,4 +1,5 @@
 import './App.css'
+import { CommandHost } from './components/CommandHost.tsx'
 import { Settings } from './view/Settings.tsx'
 import { Defender } from './view/Defender.tsx'
 import { Update } from './view/Update.tsx'
@@ -11,10 +12,20 @@ function App() {
 
     switch (appType) {
         case 'settings':
-            return <Settings />
+            return (
+                <>
+                    <Settings />
+                    <CommandHost app="settings" />
+                </>
+            )
 
         case 'defender':
-            return <Defender />
+            return (
+                <>
+                    <Defender />
+                    <CommandHost app="defender" />
+                </>
+            )
 
         case 'update':
             return <Update />
