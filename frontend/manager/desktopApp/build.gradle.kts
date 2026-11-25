@@ -23,6 +23,10 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ca.tlcp.ai.hell_os.manager"
             packageVersion = "1.0.0"
+
+            // The desktop transport uses the JDK's built-in WebSocket client and
+            // java.util.prefs; the packaged runtime must include both modules.
+            modules("java.net.http", "java.prefs")
         }
     }
 }

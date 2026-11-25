@@ -15,13 +15,12 @@ import ca.tlcp.ai.hell_os.protocol.KeyCreatedMsg
 import ca.tlcp.ai.hell_os.protocol.KeysMsg
 import ca.tlcp.ai.hell_os.protocol.ListKeys
 import ca.tlcp.ai.hell_os.protocol.LogsMsg
+import ca.tlcp.ai.hell_os.protocol.ManagerToServer
 import ca.tlcp.ai.hell_os.protocol.RevokeKey
 import ca.tlcp.ai.hell_os.protocol.SendCommand
-import ca.tlcp.ai.hell_os.protocol.ServerToManager
 import ca.tlcp.ai.hell_os.protocol.StateMsg
 import ca.tlcp.ai.hell_os.protocol.TargetCommand
 import ca.tlcp.ai.hell_os.protocol.decodeManagerMessage
-import kotlinx.serialization.SerializationException
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
@@ -61,12 +60,9 @@ class ManagerHandler(
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         val reply = registry.sessionFor(session.id) ?: return
 
-        val msg = try {
-            decodeManagerMessage(message.payload)
-        } catch (_: SerializationException) {
-            registry.sendToManager(reply, ErrorMsg("Could not understand that message."))
-            return
-        } catch (_: IllegalArgumentException) {
+        val msg = decode(message.payload)
+
+        if (msg == null) {
             registry.sendToManager(reply, ErrorMsg("Could not understand that message."))
             return
         }
@@ -104,6 +100,14 @@ class ManagerHandler(
         log.debug("Manager transport error: {}", exception.message)
     }
 
+    private fun decode(payload: String): ManagerToServer? =
+        try {
+            decodeManagerMessage(payload)
+        } catch (e: Exception) {
+            log.debug("Undecodable manager message: {}", e.message)
+            null
+        }
+
     /* ---------------- Commands ---------------- */
 
     private fun sendCommand(reply: WebSocketSession, msg: SendCommand) {
@@ -112,12 +116,21 @@ class ManagerHandler(
             registry.sendToManager(reply, AckMsg(msg.id, accepted = false, reason = reason))
         }
 
-        if (msg.id.isBlank() || msg.id.length > 64) return reject("Invalid command id")
+        if (msg.id.isBlank() || msg.id.length > 64) {
+            reject("Invalid command id")
+            return
+        }
 
-        CommandCatalogue.validate(msg.command, msg.args)?.let { return reject(it) }
+        val problem = CommandCatalogue.validate(msg.command, msg.args)
+
+        if (problem != null) {
+            reject(problem)
+            return
+        }
 
         if (!registry.sendToTarget(TargetCommand(msg.id, msg.command, msg.args))) {
-            return reject("The Target is offline")
+            reject("The Target is offline")
+            return
         }
 
         events.record(
@@ -174,6 +187,4 @@ class ManagerHandler(
 
         registry.broadcast(KeysMsg(keyInfos()))
     }
-
-    private fun WebSocketSession.sendTo(message: ServerToManager) = registry.sendToManager(this, message)
 }

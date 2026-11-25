@@ -8,8 +8,8 @@ import ca.tlcp.ai.hell_os.protocol.ResultMsg
 import ca.tlcp.ai.hell_os.protocol.StateMsg
 import ca.tlcp.ai.hell_os.protocol.TargetReport
 import ca.tlcp.ai.hell_os.protocol.TargetResult
+import ca.tlcp.ai.hell_os.protocol.TargetToServer
 import ca.tlcp.ai.hell_os.protocol.decodeTargetMessage
-import kotlinx.serialization.SerializationException
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
@@ -58,12 +58,9 @@ class TargetHandler(
             return
         }
 
-        val msg = try {
-            decodeTargetMessage(message.payload)
-        } catch (_: SerializationException) {
-            events.record("TARGET", "bad_message", "Target sent an undecodable message")
-            return
-        } catch (_: IllegalArgumentException) {
+        val msg = decode(message.payload)
+
+        if (msg == null) {
             events.record("TARGET", "bad_message", "Target sent an undecodable message")
             return
         }
@@ -120,6 +117,15 @@ class TargetHandler(
     override fun handleTransportError(session: WebSocketSession, exception: Throwable) {
         log.debug("Target transport error: {}", exception.message)
     }
+
+    private fun decode(payload: String): TargetToServer? =
+        try {
+            decodeTargetMessage(payload)
+        } catch (e: Exception) {
+            // Anything undecodable (bad JSON, unknown type, missing field) is simply dropped.
+            log.debug("Undecodable target message: {}", e.message)
+            null
+        }
 
     /** More than 50 messages in one second means something is wrong. */
     private fun tooFast(id: String): Boolean {

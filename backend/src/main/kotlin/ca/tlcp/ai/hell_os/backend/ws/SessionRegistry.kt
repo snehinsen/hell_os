@@ -60,8 +60,6 @@ class SessionRegistry {
         keyIds -= id
     }
 
-    fun managerCount(): Int = managerIds.size
-
     fun sessionFor(id: String): WebSocketSession? = sessions[id]
 
     fun sendToManager(session: WebSocketSession, message: ServerToManager) {
@@ -162,8 +160,8 @@ class SessionRegistry {
     private fun closeQuietly(session: WebSocketSession?, status: CloseStatus) {
         try {
             session?.close(status)
-        } catch (_: Exception) {
-            // already closed
+        } catch (e: Exception) {
+            log.debug("Session was already closed: {}", e.message)
         }
     }
 
